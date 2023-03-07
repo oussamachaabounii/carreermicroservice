@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="006-insert-data-biannual_assessment_skill-01" author="walid" context="testData">
+        <sql>
+
+            <!-- BIANNUAL_ASSESSMENT_SKILL -->
+            INSERT INTO career.biannual_assessment_skill (semester, year, career_id, company_id, skill_code) VALUES (1,2020, 2, 1L, 'skill.android');
+            INSERT INTO career.biannual_assessment_skill (semester, year, career_id, company_id, skill_code) VALUES (1,2020,2, 1L, 'skill.iphone');
+
+        </sql>
+        <rollback>
+            <sql>
+
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

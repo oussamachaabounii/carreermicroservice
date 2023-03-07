@@ -1,0 +1,21 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd">
+    <changeSet id="init-schema-000" author="walid">
+        <sql>
+            drop table if exists career.biannual_assessment_mobility cascade;
+            drop table if exists career.biannual_assessment_skill cascade;
+            drop table if exists career.biannual_assessment cascade;
+            drop table if exists career.assessment_campaign cascade;
+            drop table if exists career.career_mobility cascade;
+            drop table if exists career.career cascade;
+        </sql>
+        <rollback>
+            <sql>
+
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

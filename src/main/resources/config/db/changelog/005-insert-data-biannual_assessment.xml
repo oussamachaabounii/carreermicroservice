@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="005-insert-data-biannual_assessment-01" author="walid" context="testData">
+
+        <insert tableName="biannual_assessment">
+            <column name="semester" value="1" type="1"/>
+            <column name="year" value="2020"/>
+            <column name="career_id" value="2"/>
+            <column name="company_id" value="1"/>
+            <column name="technical_skill" value="B"/>
+            <column name="technical_skill_comment" value=""/>
+            <column name="organisational_skill" value="B"/>
+            <column name="organisational_skill_comment" value=""/>
+            <column name="functional_industry_competency" value="B"/>
+            <column name="functional_industry_competency_comment" value=""/>
+            <column name="deliverable_quality" value="B"/>
+            <column name="deliverable_quality_comment" value=""/>
+            <column name="management_ability" value="B"/>
+            <column name="management_ability_comment" value=""/>
+            <column name="customer_relationship" value="B"/>
+            <column name="customer_relationship_comment" value=""/>
+            <column name="corporate" value="B"/>
+            <column name="corporate_comment" value=""/>
+            <column name="team_spirit" value="B"/>
+            <column name="team_spirit_comment" value=""/>
+            <column name="attendance" value="B"/>
+            <column name="attendance_comment" value=""/>
+            <column name="global_performance_rating" value="B"/>
+            <column name="score" value="27"/>
+            <column name="comment" value=""/>
+            <column name="sp_evolutivity" value="false"/>
+            <column name="bm_evolutivity" value="false"/>
+            <column name="sf_evolutivity" value="false"/>
+            <column name="internal_trainer_potential" value="false"/>
+            <column name="creation_date" value="2020-03-11 13:51:58.000000"/>
+            <column name="last_update" value="2020-03-11 13:52:03.000000"/>
+            <column name="user_update" value="1"/>
+            <column name="version" value="0"/>
+        </insert>
+
+
+        <insert tableName="biannual_assessment">
+            <column name="semester" value="1" type="1"/>
+            <column name="year" value="2020"/>
+            <column name="career_id" value="3"/>
+            <column name="company_id" value="1"/>
+            <column name="technical_skill" value="B"/>
+            <column name="technical_skill_comment" value=""/>
+            <column name="organisational_skill" value="B"/>
+            <column name="organisational_skill_comment" value=""/>
+            <column name="functional_industry_competency" value="B"/>
+            <column name="functional_industry_competency_comment" value=""/>
+            <column name="deliverable_quality" value="B"/>
+            <column name="deliverable_quality_comment" value=""/>
+            <column name="management_ability" value="B"/>
+            <column name="management_ability_comment" value=""/>
+            <column name="customer_relationship" value="B"/>
+            <column name="customer_relationship_comment" value=""/>
+            <column name="corporate" value="B"/>
+            <column name="corporate_comment" value=""/>
+            <column name="team_spirit" value="B"/>
+            <column name="team_spirit_comment" value=""/>
+            <column name="attendance" value="B"/>
+            <column name="attendance_comment" value=""/>
+            <column name="global_performance_rating" value="B"/>
+            <column name="score" value="27"/>
+            <column name="comment" value=""/>
+            <column name="sp_evolutivity" value="false"/>
+            <column name="bm_evolutivity" value="false"/>
+            <column name="sf_evolutivity" value="false"/>
+            <column name="internal_trainer_potential" value="false"/>
+            <column name="creation_date" value="2020-03-11 13:51:58.000000"/>
+            <column name="last_update" value="2020-03-11 13:52:03.000000"/>
+            <column name="user_update" value="1"/>
+            <column name="version" value="0"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

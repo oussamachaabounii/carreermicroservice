@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>talenteo-sdk</artifactId>
+        <groupId>com.talenteo</groupId>
+        <version>1.0.7-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <description>Career ms</description>
+
+    <artifactId>career-ms</artifactId>
+    <properties>
+        <talenteo.domain.version>1.0.11-SNAPSHOT</talenteo.domain.version>
+        <jacoco.easyms.instr.coverage>0.52</jacoco.easyms.instr.coverage>
+        <jacoco.easyms.branch.coverage>0.18</jacoco.easyms.branch.coverage>
+        <jacoco.easyms.class.missed>3</jacoco.easyms.class.missed>
+    </properties>
+    <dependencies>
+        <!-- starter web test -->
+        <dependency>
+            <groupId>com.easyms</groupId>
+            <artifactId>easyms-test</artifactId>
+        </dependency>
+        <!-- azure key vault starter -->
+        <dependency>
+            <groupId>com.easyms</groupId>
+            <artifactId>easyms-azure-keyvault-starter</artifactId>
+        </dependency>
+        <!-- starter web easyms -->
+        <dependency>
+            <groupId>com.easyms</groupId>
+            <artifactId>easyms-secured-rest-starter</artifactId>
+        </dependency>
+        <!--  Spring boot data JPA -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <!-- liquibase -->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
+        <!--  H2 in memory DB -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!--  post gre DB -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!--  career domain -->
+        <dependency>
+            <groupId>com.talenteo</groupId>
+            <artifactId>career-domain</artifactId>
+            <version>${talenteo.domain.version}</version>
+        </dependency>
+        <!--  td domain -->
+        <dependency>
+            <groupId>com.talenteo</groupId>
+            <artifactId>td-domain</artifactId>
+            <version>${talenteo.domain.version}</version>
+        </dependency>
+        <!--  hr domain -->
+        <dependency>
+            <groupId>com.talenteo</groupId>
+            <artifactId>hr-domain</artifactId>
+            <version>${talenteo.domain.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <!-- Plugins-->
+        <plugins>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <propertyFile>src/main/resources/liquibase.properties</propertyFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
