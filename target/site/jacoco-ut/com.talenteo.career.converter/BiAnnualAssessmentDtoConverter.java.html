@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BiAnnualAssessmentDtoConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">career-ms</a> &gt; <a href="index.source.html" class="el_package">com.talenteo.career.converter</a> &gt; <span class="el_source">BiAnnualAssessmentDtoConverter.java</span></div><h1>BiAnnualAssessmentDtoConverter.java</h1><pre class="source lang-java linenums">package com.talenteo.career.converter;
+
+
+import com.talenteo.career.dto.BiAnnualAssessmentDto;
+
+import com.talenteo.career.dto.BiAnnualAssessmentStatus;
+import com.talenteo.career.model.entity.BiannualAssessment;
+import com.talenteo.td.dto.TechnicalDocumentDto;
+import lombok.Data;
+import org.springframework.core.convert.converter.Converter;
+
+import java.util.Objects;
+
+<span class="pc bnc" id="L14" title="All 14 branches missed.">@Data(staticConstructor = &quot;newInstance&quot;)</span>
+public class BiAnnualAssessmentDtoConverter implements Converter&lt;BiannualAssessment, BiAnnualAssessmentDto&gt; {
+<span class="nc" id="L16">    private TechnicalDocumentDto technicalDocumentDto;</span>
+
+    @Override
+    public BiAnnualAssessmentDto convert(BiannualAssessment biannualAssessment) {
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">        if (Objects.isNull(biannualAssessment)) {</span>
+<span class="nc" id="L21">            return null;</span>
+        }
+<span class="fc" id="L23">        return BiAnnualAssessmentDto.builder()</span>
+<span class="fc" id="L24">                .semester(biannualAssessment.getId().getAssessmentCampaign().getId().getSemester())</span>
+<span class="fc" id="L25">                .year(biannualAssessment.getId().getAssessmentCampaign().getId().getYear())</span>
+<span class="fc" id="L26">                .careerId(biannualAssessment.getId().getCareer().getId())</span>
+<span class="fc" id="L27">                .companyId(biannualAssessment.getId().getAssessmentCampaign().getId().getCompanyId())</span>
+<span class="fc" id="L28">                .comment(biannualAssessment.getComment())</span>
+<span class="fc" id="L29">                .corporate(biannualAssessment.getCorporate())</span>
+<span class="fc" id="L30">                .creationDate(biannualAssessment.getCreationDate())</span>
+<span class="fc" id="L31">                .customerRelationship(biannualAssessment.getCustomerRelationship())</span>
+<span class="fc" id="L32">                .functionalIndustryCompetency(biannualAssessment.getFunctionalIndustryCompetency())</span>
+<span class="fc" id="L33">                .internalTrainerPotential(biannualAssessment.getInternalTrainerPotential())</span>
+<span class="fc" id="L34">                .lastUpdate(biannualAssessment.getLastUpdate())</span>
+<span class="fc" id="L35">                .managementAbility(biannualAssessment.getManagementAbility())</span>
+<span class="fc" id="L36">                .organisationalSkill(biannualAssessment.getOrganisationalSkill())</span>
+<span class="fc" id="L37">                .sfEvolutivity(biannualAssessment.getSfEvolutivity())</span>
+<span class="fc" id="L38">                .bmEvolutivity(biannualAssessment.getBmEvolutivity())</span>
+<span class="fc" id="L39">                .score(biannualAssessment.getScore())</span>
+<span class="fc" id="L40">                .status(BiAnnualAssessmentStatus.valueOf(biannualAssessment.getStatus()))</span>
+<span class="fc" id="L41">                .globalPerformanceRating(biannualAssessment.getGlobalPerformanceRating())</span>
+<span class="fc" id="L42">                .teamSpirit(biannualAssessment.getTeamSpirit())</span>
+<span class="fc" id="L43">                .userUpdate(biannualAssessment.getUserUpdate())</span>
+<span class="fc" id="L44">                .version(biannualAssessment.getVersion())</span>
+<span class="fc" id="L45">                .technicalSkill(biannualAssessment.getTechnicalSkill())</span>
+<span class="fc" id="L46">                .customerRelationshipComment(biannualAssessment.getCustomerRelationshipComment())</span>
+<span class="fc" id="L47">                .functionalIndustryCompetencyComment(biannualAssessment.getFunctionalIndustryCompetencyComment())</span>
+<span class="fc" id="L48">                .managementAbilityComment(biannualAssessment.getManagementAbilityComment())</span>
+<span class="fc" id="L49">                .organisationalSkillComment(biannualAssessment.getOrganisationalSkillComment())</span>
+<span class="fc" id="L50">                .corporateComment(biannualAssessment.getCorporateComment())</span>
+<span class="fc" id="L51">                .technicalSkillComment(biannualAssessment.getTechnicalSkillComment())</span>
+<span class="fc" id="L52">                .teamSpiritComment(biannualAssessment.getTeamSpiritComment())</span>
+<span class="fc" id="L53">                .attendance(biannualAssessment.getAttendance())</span>
+<span class="fc" id="L54">                .attendanceComment(biannualAssessment.getAttendanceComment())</span>
+<span class="fc" id="L55">                .deliverableQuality(biannualAssessment.getDeliverableQuality())</span>
+<span class="fc" id="L56">                .deliverableQualityComment(biannualAssessment.getDeliverableQualityComment())</span>
+<span class="fc" id="L57">                .build();</span>
+    }
+
+    public BiAnnualAssessmentDtoConverter withTd(TechnicalDocumentDto technicalDocumentDto) {
+<span class="fc" id="L61">        this.technicalDocumentDto = technicalDocumentDto;</span>
+<span class="fc" id="L62">        return this;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

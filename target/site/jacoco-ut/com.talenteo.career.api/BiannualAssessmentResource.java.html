@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BiannualAssessmentResource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">career-ms</a> &gt; <a href="index.source.html" class="el_package">com.talenteo.career.api</a> &gt; <span class="el_source">BiannualAssessmentResource.java</span></div><h1>BiannualAssessmentResource.java</h1><pre class="source lang-java linenums">package com.talenteo.career.api;
+
+import com.talenteo.career.dto.AssessmentCampaignDto;
+import com.talenteo.career.dto.BiAnnualAssessmentDto;
+import com.talenteo.career.dto.BiannualAssessmentRequestDto;
+import com.talenteo.career.dto.BiannualAssessmentsCountDto;
+import com.talenteo.career.service.CareerService;
+import com.talenteo.career.service.ValidationService;
+import io.micrometer.core.annotation.Timed;
+import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+
+<span class="fc" id="L27">@Slf4j</span>
+@RestController
+@RequestMapping(&quot;/api&quot;)
+@Validated
+<span class="fc" id="L31">@AllArgsConstructor</span>
+@Timed
+public class BiannualAssessmentResource {
+
+    private final CareerService careerService;
+    private final ValidationService validationService;
+
+    /**
+     * =======================================================
+     * Create new biannual assessment
+     * =======================================================
+     *
+     * @param assessmentRequestDto
+     * @return
+     */
+    @ApiOperation(&quot;Create new biannual assessment &quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_BA²')&quot;)
+    @PostMapping(produces = APPLICATION_JSON_VALUE, path = &quot;/v1/biannual-assessments&quot;)
+    public ResponseEntity&lt;BiAnnualAssessmentDto&gt; create(@RequestBody @Valid BiannualAssessmentRequestDto assessmentRequestDto) {
+<span class="fc" id="L51">        log.info(&quot;create new Biannual Assessment : {} &quot;, assessmentRequestDto);</span>
+<span class="fc" id="L52">        validationService.validate(assessmentRequestDto);</span>
+<span class="fc" id="L53">        BiAnnualAssessmentDto dto = careerService.saveBiannualAssessment(assessmentRequestDto);</span>
+<span class="fc" id="L54">        final URI location = ServletUriComponentsBuilder.fromCurrentServletMapping().</span>
+<span class="fc" id="L55">                path(&quot;/api/v1/biannualAssessments/{id}&quot;).build().expand(dto.getYear()).toUri();</span>
+<span class="fc" id="L56">        return ResponseEntity.created(location).body(dto);</span>
+    }
+
+    /**
+     * =======================================================
+     * Create new biannual assessment
+     * =======================================================
+     *
+     * @param assessmentRequestDto
+     * @return
+     */
+    @ApiOperation(&quot;Update new biannual assessment &quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_BA')&quot;)
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = &quot;/v1/biannual-assessments&quot;)
+    public ResponseEntity&lt;BiAnnualAssessmentDto&gt; update(@RequestParam(&quot;semester&quot;) Integer semester, @RequestParam(&quot;year&quot;) Integer year, @RequestParam(&quot;career_id&quot;) Long careerId, @RequestBody @Valid BiannualAssessmentRequestDto assessmentRequestDto) {
+<span class="nc" id="L72">        log.info(&quot;update Biannual Assessment : {} &quot;, assessmentRequestDto);</span>
+<span class="nc" id="L73">        BiAnnualAssessmentDto dto = careerService.updateBiannualAssessment(semester, year, careerId, assessmentRequestDto);</span>
+<span class="nc" id="L74">        return ResponseEntity.ok().body(dto);</span>
+    }
+
+
+    /**
+     * =======================================================
+     * Get biannual by hr ID
+     * =======================================================
+     *
+     * @param hrId
+     * @return
+     */
+    @ApiOperation(&quot;Get biannual assessment by HR ID &quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_BA')&quot;)
+    @GetMapping(produces = APPLICATION_JSON_VALUE, path = &quot;/v1/biannual-assessments/by-hr&quot;)
+
+    public ResponseEntity&lt;List&lt;BiAnnualAssessmentDto&gt;&gt; findBiannualAssessmentByhrId(@RequestParam(name = &quot;hr_id&quot;) Long hrId) {
+
+<span class="fc" id="L93">        log.info(&quot;biannual assessment by HR ID {} &quot;, hrId);</span>
+<span class="fc" id="L94">        List&lt;BiAnnualAssessmentDto&gt; biAnnualAssessmentDto = careerService.findHistoryBiannualAssessmentsByResourceId(hrId);</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (biAnnualAssessmentDto.isEmpty())</span>
+<span class="fc" id="L96">            return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</span>
+<span class="fc" id="L97">        return new ResponseEntity&lt;&gt;(biAnnualAssessmentDto, HttpStatus.OK);</span>
+    }
+
+    /**
+     * =======================================================
+     * Get the biannual assessments count by Manager ID
+     * =======================================================
+     *
+     * @param cmId
+     * @return
+     */
+    @ApiOperation(&quot;Get the biannual assessments count by Manager Id&quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_BA')&quot;)
+    @GetMapping(produces = APPLICATION_JSON_VALUE, path = &quot;/v1/biannual-assessments-count&quot;)
+    public ResponseEntity&lt;BiannualAssessmentsCountDto&gt; findAnnualassessmentCountByCmId(@RequestParam(name = &quot;cm_id&quot;) Long cmId) {
+<span class="nc" id="L113">        log.info(&quot;biannual assessment count by CM ID {} &quot;, cmId);</span>
+<span class="nc" id="L114">        BiannualAssessmentsCountDto biannualAssessmentsCountDto = careerService.countBiannualAssessments(cmId);</span>
+<span class="nc" id="L115">        return ResponseEntity.ok().body(biannualAssessmentsCountDto);</span>
+    }
+
+    @ApiOperation(&quot;Get the biannual assessments count by Manager Id&quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_BA')&quot;)
+    @GetMapping(produces = APPLICATION_JSON_VALUE, path = &quot;/v1/biannual-assessments-nb&quot;)
+    public ResponseEntity&lt;Map&lt;String, Long&gt;&gt; findAssessmentCount(@RequestParam(name = &quot;cm_id&quot;) Long cmId) {
+<span class="nc" id="L123">        log.info(&quot;biannual assessment count by CM ID {} &quot;, cmId);</span>
+<span class="nc" id="L124">        Map&lt;String, Long&gt; biannualAssessmentsCountDto = careerService.statsBiannualAssessments(cmId);</span>
+<span class="nc" id="L125">        return ResponseEntity.ok().body(biannualAssessmentsCountDto);</span>
+    }
+
+
+    /**
+     * =======================================================
+     * Get the biannual assessments history by Manager ID
+     * =======================================================
+     *
+     * @param cmId
+     * @return
+     */
+    @ApiOperation(&quot;Get the biannual assessments history by Manager Id&quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_BA')&quot;)
+    @GetMapping(produces = APPLICATION_JSON_VALUE, path = &quot;/v1/biannual-assessments/by-manager&quot;)
+    public ResponseEntity&lt;BiannualAssessmentsCountDto&gt; findBiannualAssessmentsByCmId(@RequestParam(name = &quot;cm_id&quot;) Long cmId) {
+<span class="fc" id="L142">        log.info(&quot;biannual assessments by CM ID {} &quot;, cmId);</span>
+<span class="fc" id="L143">        List&lt;BiAnnualAssessmentDto&gt; biAnnualAssessmentDtoList = careerService.findHistoryBiannualAssessmentsByManagerId(cmId);</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (biAnnualAssessmentDtoList.isEmpty())</span>
+<span class="nc" id="L145">            return new ResponseEntity&lt;&gt;(HttpStatus.NOT_FOUND);</span>
+<span class="fc" id="L146">        return new ResponseEntity(biAnnualAssessmentDtoList, HttpStatus.OK);</span>
+    }
+
+    /**
+     * =======================================================
+     * Get latest assessment campaign
+     * =======================================================
+     *
+     * @return
+     */
+    @ApiOperation(&quot;Get latest assessment campaign&quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_BA')&quot;)
+    @GetMapping(produces = APPLICATION_JSON_VALUE, path = &quot;/v1/biannual-assessments/latest-campaign&quot;)
+    public ResponseEntity&lt;AssessmentCampaignDto&gt; getBiannualAssessmentPeriod() {
+<span class="fc" id="L161">        log.info(&quot;Get biannual latest campaign &quot;);</span>
+<span class="fc" id="L162">        AssessmentCampaignDto assessmentCampaignDto = careerService.findLatestAssessmentCampaign();</span>
+<span class="fc" id="L163">        return ResponseEntity.ok().body(assessmentCampaignDto);</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

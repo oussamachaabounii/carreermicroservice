@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CareerResource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">career-ms</a> &gt; <a href="index.source.html" class="el_package">com.talenteo.career.api</a> &gt; <span class="el_source">CareerResource.java</span></div><h1>CareerResource.java</h1><pre class="source lang-java linenums">package com.talenteo.career.api;
+
+import com.talenteo.career.dto.*;
+import com.talenteo.career.model.entity.AssessmentCampaign;
+import com.talenteo.career.service.CareerService;
+import com.talenteo.td.dto.DegreeDto;
+import io.micrometer.core.annotation.Timed;
+import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+
+<span class="fc" id="L25">@Slf4j</span>
+@RestController
+@RequestMapping(&quot;/api&quot;)
+@Validated
+<span class="fc" id="L29">@AllArgsConstructor</span>
+@Timed
+public class CareerResource {
+
+    private final CareerService careerService;
+
+    /**
+     * =======================================================
+     * get career by id
+     * =======================================================
+     *
+     * @param id
+     * @return
+     */
+    @ApiOperation(&quot;get career by id&quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_CAREER')&quot;)
+    @GetMapping(produces = APPLICATION_JSON_VALUE, path = &quot;/v1/careers/{id}&quot;)
+    public ResponseEntity&lt;CareerDto&gt; getCareer(@PathVariable Long id) {
+<span class="fc" id="L48">        log.info(&quot;find career by id {} &quot;, id);</span>
+<span class="fc" id="L49">        Optional&lt;CareerDto&gt; career = careerService.findCareerById(id);</span>
+<span class="fc" id="L50">        return career.map(c -&gt; ResponseEntity.ok().body(c)).orElse(ResponseEntity.notFound().build());</span>
+
+    }
+
+    /**
+     * =======================================================
+     * get career by HR ID
+     * =======================================================
+     *
+     * @param resourceId
+     * @return
+     */
+    @ApiOperation(&quot;get career by HR ID&quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_CAREER')&quot;)
+    @GetMapping(produces = APPLICATION_JSON_VALUE, path = &quot;/v1/careers&quot;)
+    public ResponseEntity&lt;CareerDto&gt; getCareerByResourceId(@RequestParam Long resourceId) {
+<span class="fc" id="L67">        log.info(&quot;find career by resourceId {} &quot;, resourceId);</span>
+<span class="fc" id="L68">        Optional&lt;CareerDto&gt; career = careerService.findCareerByResourceId(resourceId);</span>
+<span class="fc" id="L69">        return career.map(c -&gt; ResponseEntity.ok().body(c)).orElse(ResponseEntity.notFound().build());</span>
+
+    }
+
+
+    /**
+     * =======================================================
+     * get career list by Manager
+     * =======================================================
+     *
+     * @param managerId
+     * @return
+     */
+    @ApiOperation(&quot;get careers by manager ID&quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_CAREER')&quot;)
+    @GetMapping(produces = APPLICATION_JSON_VALUE, path = &quot;/v1/careers/by-manager&quot;)
+    public ResponseEntity&lt;List&lt;CareerDto&gt;&gt; getCareersByManagerId(@RequestParam Long managerId) {
+<span class="nc" id="L87">        log.info(&quot;find careers by managerId {} &quot;, managerId);</span>
+<span class="nc" id="L88">        List&lt;CareerDto&gt; careerDtoList = careerService.findCareersByManagerId(managerId);</span>
+<span class="nc" id="L89">        return ResponseEntity.ok(careerDtoList);</span>
+
+    }
+
+    /**
+     * =======================================================
+     * Create new career
+     * =======================================================
+     *
+     * @param careerRequestDto
+     * @return
+     */
+    @ApiOperation(&quot;Create new biannual assessment &quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_BA²')&quot;)
+    @PostMapping(produces = APPLICATION_JSON_VALUE, path = &quot;/v1/careers&quot;)
+    public ResponseEntity&lt;CareerDto&gt; create(@RequestBody @Valid CareerRequestDto careerRequestDto) {
+<span class="nc" id="L106">        log.info(&quot;create new career : {} &quot;, careerRequestDto);</span>
+<span class="nc" id="L107">        CareerDto careerDto = careerService.saveCareer(careerRequestDto);</span>
+<span class="nc" id="L108">        final URI location = ServletUriComponentsBuilder.fromCurrentServletMapping().</span>
+<span class="nc" id="L109">                path(&quot;/api/v1/careers/{id}&quot;).build().expand(careerDto.getId()).toUri();</span>
+<span class="nc" id="L110">        return ResponseEntity.created(location).body(careerDto);</span>
+    }
+
+
+    @ApiOperation(&quot;Create new campaign assessment &quot;)
+    @Timed
+    //@PreAuthorize(&quot;hasAnyAuthority('PERM_GET_BA²')&quot;)
+    @PostMapping(produces = APPLICATION_JSON_VALUE, path = &quot;/v1/campaign-assessments&quot;)
+    public ResponseEntity&lt;AssessmentCampaignDto&gt; create(@RequestBody @Valid AssessmentCampaignRequestDto assessmentCampaignRequestDto) {
+<span class="fc" id="L119">        log.info(&quot;create new assessmentCampaign : {} &quot;, assessmentCampaignRequestDto);</span>
+<span class="fc" id="L120">        AssessmentCampaignDto assessmentCampaignDto = careerService.saveAssessmentCampaign(assessmentCampaignRequestDto);</span>
+<span class="fc" id="L121">        final URI location = ServletUriComponentsBuilder.fromCurrentServletMapping().</span>
+<span class="fc" id="L122">                path(&quot;/api/v1/campaign-assessments/{id}&quot;).build().expand(assessmentCampaignDto.getYear()).toUri();</span>
+<span class="fc" id="L123">        return ResponseEntity.created(location).body(assessmentCampaignDto);</span>
+    }
+
+    @ApiOperation(&quot;search all assessment campaigns by company&quot;)
+    @Timed
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = &quot;/v1/campaign-assessments&quot;)
+    ResponseEntity&lt;List&lt;AssessmentCampaignDto&gt;&gt; getAllAssessmentCampaigns(@RequestParam(name = &quot;company_id&quot;) Long companyId) {
+<span class="nc" id="L130">        log.info(&quot;search all assessment campaigns by company = {}&quot;, companyId);</span>
+<span class="nc" id="L131">        List&lt;AssessmentCampaignDto&gt; assessmentCampaigns = careerService.getAllByCompanyId(companyId);</span>
+<span class="nc" id="L132">        return ResponseEntity.ok().body(assessmentCampaigns);</span>
+    }
+
+
+    @RequestMapping(value = &quot;{id}&quot;, method = RequestMethod.DELETE)
+    public ResponseEntity&lt;Void&gt; deleteCareerById(@PathVariable(&quot;id&quot;) long careerId) {
+<span class="nc" id="L138">        log.info(&quot;Deleting career with id: {}&quot;, careerId);</span>
+<span class="nc" id="L139">        Optional&lt;CareerDto&gt; careerToDelete = careerService.findCareerById(careerId);</span>
+
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (careerToDelete.isEmpty()) {</span>
+<span class="nc" id="L142">            return new ResponseEntity&lt;Void&gt;(HttpStatus.NOT_FOUND);</span>
+        }
+
+<span class="nc" id="L145">        careerService.deleteCareerById(careerId);</span>
+
+<span class="nc" id="L147">        return new ResponseEntity&lt;Void&gt;(HttpStatus.OK);</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

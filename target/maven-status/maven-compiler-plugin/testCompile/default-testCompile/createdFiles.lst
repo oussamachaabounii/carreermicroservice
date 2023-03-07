@@ -1,0 +1,4 @@
+com\talenteo\career\service\ValidationServiceTest.class
+com\talenteo\career\api\BiannualAssessmentResourceTest.class
+com\talenteo\career\service\CareerServiceTest.class
+com\talenteo\career\api\CareerResourceTest.class

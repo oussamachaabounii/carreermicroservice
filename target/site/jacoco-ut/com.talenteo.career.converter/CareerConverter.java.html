@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CareerConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">career-ms</a> &gt; <a href="index.source.html" class="el_package">com.talenteo.career.converter</a> &gt; <span class="el_source">CareerConverter.java</span></div><h1>CareerConverter.java</h1><pre class="source lang-java linenums">package com.talenteo.career.converter;
+
+
+import com.talenteo.career.dto.CareerDto;
+import com.talenteo.career.model.entity.Career;
+import com.talenteo.career.model.entity.CareerMobility;
+import com.talenteo.career.model.entity.embedded.CareerMobilityId;
+import lombok.Data;
+import org.springframework.core.convert.converter.Converter;
+
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+<span class="pc bnc" id="L14" title="All 6 branches missed.">@Data(staticConstructor = &quot;newInstance&quot;)</span>
+public class CareerConverter implements Converter&lt;Career, CareerDto&gt; {
+
+    @Override
+    public CareerDto convert(Career career) {
+<span class="fc bfc" id="L19" title="All 2 branches covered.">        if (Objects.isNull(career)) {</span>
+<span class="fc" id="L20">            return null;</span>
+        }
+<span class="fc" id="L22">        return CareerDto.builder()</span>
+<span class="fc" id="L23">                .id(career.getId())</span>
+<span class="fc" id="L24">                .hr(career.getHr())</span>
+<span class="fc" id="L25">                .comment(career.getComment())</span>
+<span class="fc" id="L26">                .availabilityDate(career.getAvailabilityDate())</span>
+                //.biannualAssessments(career.getBiannualAssessments().stream().map(BiAnnualAssessmentDtoConverter.newInstance()::convert).collect(Collectors.toList()))
+                //.careerMobilities(career.getCareerMobilities().stream().map(CareerMobility::getId).map(CareerMobilityId::getMobilityCode).collect(Collectors.toList()))
+<span class="fc" id="L29">                .cm(career.getCm())</span>
+<span class="fc" id="L30">                .cma(career.getCma())</span>
+<span class="fc" id="L31">                .dailyFee(career.getDailyFee())</span>
+<span class="fc" id="L32">                .devise(career.getDevise())</span>
+<span class="fc" id="L33">                .executiveStatus(career.getExecutiveStatus())</span>
+<span class="fc" id="L34">                .lastBa(career.getLastBa())</span>
+<span class="fc" id="L35">                .monthlySalary(career.getMonthlySalary())</span>
+<span class="fc" id="L36">                .mobilityComment(career.getMobilityComment())</span>
+<span class="fc" id="L37">                .lastBmFollowup(null)</span>
+<span class="fc" id="L38">                .entryDate(career.getEntryDate())</span>
+<span class="fc" id="L39">                .build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ValidationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">career-ms</a> &gt; <a href="index.source.html" class="el_package">com.talenteo.career.service</a> &gt; <span class="el_source">ValidationService.java</span></div><h1>ValidationService.java</h1><pre class="source lang-java linenums">package com.talenteo.career.service;
+
+import com.easyms.rest.ms.rest.Validator;
+import com.talenteo.career.dto.BiannualAssessmentRequestDto;
+import com.talenteo.career.model.entity.AssessmentCampaign;
+import com.talenteo.career.model.entity.Career;
+import com.talenteo.career.model.entity.embedded.AssessmentCampaignId;
+import com.talenteo.career.model.entity.embedded.BiannualAssessmentId;
+import com.talenteo.career.client.HrMsClient;
+import com.talenteo.career.repository.BiannualAssessmentRepository;
+import com.talenteo.career.utils.CareerMessages;
+import com.talenteo.common.error.TalenteoCommonMessages;
+import com.talenteo.hr.dto.HumanResourceDto;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+
+import javax.transaction.Transactional;
+import java.util.Objects;
+
+@Component
+<span class="fc" id="L23">@AllArgsConstructor</span>
+@Transactional
+<span class="fc" id="L25">@Slf4j</span>
+public class ValidationService {
+
+    private final BiannualAssessmentRepository biannualAssessmentRepository;
+    private final HrMsClient hrMsClient;
+
+    /**
+     * =======================================================
+     * Validate BiAnnual Assessment Request
+     * =======================================================
+     * @param request
+     */
+    public void validate(BiannualAssessmentRequestDto request) {
+<span class="fc" id="L38">        Validator.of(request)</span>
+<span class="fc" id="L39">                .validateIf(this::validateCompositeId, () -&gt; new IllegalStateException(CareerMessages.id_not_valid.getErrorKey()))</span>
+<span class="fc" id="L40">                .ifValid()</span>
+<span class="fc" id="L41">                .validateIf(this::existingCompositeId, () -&gt; new IllegalStateException((CareerMessages.biannual_assessment_already_exist.getErrorKey())))</span>
+<span class="nc" id="L42">                .execute();</span>
+<span class="nc" id="L43">    }</span>
+
+    /**
+     * =======================================================
+     * Test if composite Id exists
+     * =======================================================
+     * @param requestDto
+     * @return
+     */
+    private boolean existingCompositeId(BiannualAssessmentRequestDto requestDto) {
+<span class="fc" id="L53">        return biannualAssessmentRepository.findById(getCompositeKey(requestDto)).isPresent();</span>
+    }
+
+    /**
+     * =======================================================
+     * validate BiannualAssessment CompositeId
+     * =======================================================
+     * @param assessmentRequestDto
+     * @return
+     */
+
+    private boolean validateCompositeId(BiannualAssessmentRequestDto assessmentRequestDto) {
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        return Objects.isNull(assessmentRequestDto.getCareer())</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">                || Objects.isNull(assessmentRequestDto.getYear())</span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">                || Objects.isNull(assessmentRequestDto.getSemester());</span>
+    }
+
+    /**
+     * =======================================================
+     * Validate resource
+     * =======================================================
+     * @param id
+     */
+    public void validateResource(Long id) throws Exception{
+
+<span class="fc" id="L78">        ResponseEntity&lt;HumanResourceDto&gt; hrDto = hrMsClient.getById(id);</span>
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (hrDto.getStatusCodeValue()==404)</span>
+<span class="fc" id="L81">            throw new IllegalStateException(TalenteoCommonMessages.hr_not_found.getErrorKey());</span>
+
+<span class="fc" id="L83">    }</span>
+
+    /**
+     * =======================================================
+     * get CompositeId of Biannual assessment request
+     * =======================================================
+     * @param requestDto
+     * @return
+     */
+
+    private BiannualAssessmentId getCompositeKey(BiannualAssessmentRequestDto requestDto) {
+<span class="fc" id="L94">        return BiannualAssessmentId.builder()</span>
+<span class="fc" id="L95">                .assessmentCampaign(AssessmentCampaign.builder()</span>
+<span class="fc" id="L96">                        .id(AssessmentCampaignId.builder()</span>
+<span class="fc" id="L97">                                .semester(requestDto.getSemester())</span>
+<span class="fc" id="L98">                                .year(requestDto.getYear())</span>
+<span class="fc" id="L99">                                .build())</span>
+<span class="fc" id="L100">                        .build())</span>
+<span class="fc" id="L101">                .career(Career.builder()</span>
+<span class="fc" id="L102">                        .id(requestDto.getCareer())</span>
+<span class="fc" id="L103">                        .build())</span>
+<span class="fc" id="L104">                .build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

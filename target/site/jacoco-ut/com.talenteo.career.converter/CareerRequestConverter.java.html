@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CareerRequestConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">career-ms</a> &gt; <a href="index.source.html" class="el_package">com.talenteo.career.converter</a> &gt; <span class="el_source">CareerRequestConverter.java</span></div><h1>CareerRequestConverter.java</h1><pre class="source lang-java linenums">package com.talenteo.career.converter;
+
+
+import com.talenteo.career.dto.BiannualAssessmentRequestDto;
+import com.talenteo.career.dto.CareerRequestDto;
+import com.talenteo.career.model.entity.AssessmentCampaign;
+import com.talenteo.career.model.entity.BiannualAssessment;
+import com.talenteo.career.model.entity.Career;
+import com.talenteo.career.model.entity.embedded.AssessmentCampaignId;
+import com.talenteo.career.model.entity.embedded.BiannualAssessmentId;
+import lombok.Data;
+import org.springframework.core.convert.converter.Converter;
+
+import java.util.Objects;
+
+<span class="nc bnc" id="L16" title="All 6 branches missed.">@Data(staticConstructor = &quot;newInstance&quot;)</span>
+public class CareerRequestConverter implements Converter&lt;CareerRequestDto, Career&gt; {
+
+
+    @Override
+    public Career convert(CareerRequestDto input) {
+<span class="nc bnc" id="L22" title="All 2 branches missed.">        if (Objects.isNull(input)) {</span>
+<span class="nc" id="L23">            return null;</span>
+        }
+
+
+<span class="nc" id="L27">        return Career.builder()</span>
+               // .id()
+<span class="nc" id="L29">                .comment(input.getComment())</span>
+<span class="nc" id="L30">                .hr(input.getHr())</span>
+<span class="nc" id="L31">                .cm(input.getCm())</span>
+<span class="nc" id="L32">                .entryDate(input.getEntryDate())</span>
+<span class="nc" id="L33">                .availabilityDate(input.getAvailabilityDate())</span>
+<span class="nc" id="L34">                .lastBa(input.getLastBa())</span>
+<span class="nc" id="L35">                .dailyFee(input.getDailyFee())</span>
+<span class="nc" id="L36">                .monthlySalary(input.getMonthlySalary())</span>
+<span class="nc" id="L37">                .executiveStatus(input.getExecutiveStatus())</span>
+<span class="nc" id="L38">                .build();</span>
+
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

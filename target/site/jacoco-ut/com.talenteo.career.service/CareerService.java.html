@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CareerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">career-ms</a> &gt; <a href="index.source.html" class="el_package">com.talenteo.career.service</a> &gt; <span class="el_source">CareerService.java</span></div><h1>CareerService.java</h1><pre class="source lang-java linenums">package com.talenteo.career.service;
+
+import com.talenteo.career.client.HrMsClient;
+import com.talenteo.career.client.SearchMsClient;
+import com.talenteo.career.client.TdMsClient;
+import com.talenteo.career.converter.*;
+import com.talenteo.career.dto.*;
+import com.talenteo.career.model.entity.AssessmentCampaign;
+import com.talenteo.career.model.entity.BiannualAssessment;
+import com.talenteo.career.model.entity.Career;
+import com.talenteo.career.repository.AssessmentCampaignRepository;
+import com.talenteo.career.repository.BiannualAssessmentRepository;
+import com.talenteo.career.repository.CareerRepository;
+import com.talenteo.career.repository.MobilityRepository;
+import com.talenteo.td.dto.TechnicalDocumentDto;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L27">@Slf4j</span>
+@Component
+<span class="fc" id="L29">@AllArgsConstructor</span>
+@Transactional
+public class CareerService {
+
+    private final MobilityRepository mobilityRepository;
+    private final CareerRepository careerRepository;
+    private final BiannualAssessmentRepository biannualAssessmentRepository;
+    private final AssessmentCampaignRepository assessmentCampaignRepository;
+    private final TdMsClient tdMsClient;
+    private final HrMsClient hrMsClient;
+    private final SearchMsClient searchMsClient;
+
+
+    /**
+     * =======================================================
+     * Find Career By ID
+     * =======================================================
+     *
+     * @param careerId
+     * @return
+     */
+    public Optional&lt;CareerDto&gt; findCareerById(Long careerId) {
+<span class="fc" id="L51">        Career career = careerRepository.findById(careerId).orElse(null);</span>
+<span class="fc" id="L52">        return Optional.ofNullable(CareerConverter.newInstance().convert(career));</span>
+
+    }
+
+    /**
+     * =======================================================
+     * Find career By resource ID
+     * =======================================================
+     *
+     * @param hrId
+     * @return
+     */
+    public Optional&lt;CareerDto&gt; findCareerByResourceId(Long hrId) {
+<span class="fc" id="L65">        Optional&lt;Career&gt; career = careerRepository.findByHr(hrId);</span>
+<span class="fc" id="L66">        return career.map(CareerConverter.newInstance()::convert);</span>
+    }
+
+    /**
+     * =======================================================
+     * find History of BiannualAssessments By Resource Id
+     * =======================================================
+     *
+     * @param hrId
+     * @return
+     */
+    public List&lt;BiAnnualAssessmentDto&gt; findHistoryBiannualAssessmentsByResourceId(Long hrId) {
+        //initiate feign call to TD MS
+<span class="fc" id="L79">        Optional&lt;TechnicalDocumentDto&gt; documentDto = Optional.of(tdMsClient.getByHrId(hrId).getBody());</span>
+<span class="fc" id="L80">        List&lt;BiannualAssessment&gt; biannualAssessmentList = biannualAssessmentRepository.findByIdCareerHr(hrId);</span>
+<span class="fc" id="L81">        log.info(&quot;Biannual assessments size {}&quot;, biannualAssessmentList.size());</span>
+
+<span class="fc" id="L83">        return biannualAssessmentList.stream().</span>
+<span class="fc" id="L84">                map(BiAnnualAssessmentDtoConverter.newInstance()</span>
+<span class="fc" id="L85">                        .withTd(documentDto.orElse(TechnicalDocumentDto.builder().build()))::convert)</span>
+<span class="fc" id="L86">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * =======================================================
+     * find History of BiannualAssessments By Manager Id
+     * =======================================================
+     *
+     * @param cmId
+     * @return
+     */
+    public List&lt;BiAnnualAssessmentDto&gt; findHistoryBiannualAssessmentsByManagerId(Long cmId) {
+        //initiate feign call to TD MS
+        //Optional&lt;TechnicalDocumentDto&gt; documentDto = Optional.of(tdMsClient.getByHrId(id).getBody());
+<span class="fc" id="L100">        List&lt;BiannualAssessment&gt; biannualAssessmentList = biannualAssessmentRepository.findByIdCareerCm(cmId);</span>
+<span class="fc" id="L101">        log.info(&quot;Biannual assessments size {}&quot;, biannualAssessmentList.size());</span>
+
+<span class="fc" id="L103">        return biannualAssessmentList.stream().</span>
+<span class="fc" id="L104">                map(BiAnnualAssessmentDtoConverter.newInstance()::convert)</span>
+<span class="fc" id="L105">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * =======================================================
+     * Find latest Assessment campaign
+     * =======================================================
+     *
+     * @return
+     */
+    public AssessmentCampaignDto findLatestAssessmentCampaign() {
+<span class="fc" id="L116">        AssessmentCampaign assessmentCampaign = assessmentCampaignRepository.findFirstByOrderByEndDateDesc();</span>
+<span class="fc" id="L117">        return CompaignConverterDto.newInstance().convert(assessmentCampaign);</span>
+    }
+
+
+    /**
+     * =======================================================
+     * Find Career By CM
+     * =======================================================
+     *
+     * @param cmId
+     * @return
+     */
+    public List&lt;CareerDto&gt; findCareerByCm(Long cmId) {
+<span class="nc" id="L130">        List&lt;Career&gt; careerList = careerRepository.findByCm(cmId);</span>
+<span class="nc" id="L131">        return careerList.stream().map(career -&gt; CareerConverter.newInstance().convert(career)).collect(Collectors.toList());</span>
+    }
+
+    /**
+     * =======================================================
+     * create a new  biannual assessment
+     * =======================================================
+     *
+     * @param baRequestDto
+     * @return
+     */
+    public BiAnnualAssessmentDto saveBiannualAssessment(BiannualAssessmentRequestDto baRequestDto) {
+<span class="fc" id="L143">        BiannualAssessment biannualAssessment = BiannualAssessmentConverter.newInstance().convert(baRequestDto);</span>
+<span class="fc" id="L144">        BiannualAssessment assessmentSaved = biannualAssessmentRepository.save(biannualAssessment);</span>
+<span class="fc" id="L145">        return BiAnnualAssessmentDtoConverter.newInstance().convert(assessmentSaved);</span>
+    }
+
+    public AssessmentCampaignDto saveAssessmentCampaign(AssessmentCampaignRequestDto assessmentRequestDto) {
+<span class="fc" id="L149">        AssessmentCampaign assessmentCampaign = AssessmentCampaignConverter.newInstance().convert(assessmentRequestDto);</span>
+<span class="fc" id="L150">        AssessmentCampaign assessmentSaved = assessmentCampaignRepository.save(assessmentCampaign);</span>
+<span class="fc" id="L151">        return AssessmentCampaignDtoConverter.newInstance().convert(assessmentSaved);</span>
+    }
+
+    /**
+     * =======================================================
+     * create a new  career
+     * =======================================================
+     *
+     * @param careerRequestDto
+     * @return
+     */
+    public CareerDto saveCareer(CareerRequestDto careerRequestDto) {
+<span class="nc" id="L163">        Career career = CareerRequestConverter.newInstance().convert(careerRequestDto);</span>
+<span class="nc" id="L164">        Career savedCareer = careerRepository.save(career);</span>
+<span class="nc" id="L165">        indexElasticSearch(savedCareer);</span>
+<span class="nc" id="L166">        return CareerConverter.newInstance().convert(savedCareer);</span>
+    }
+
+    /**
+     * Index created career in elastic Search database
+     *
+     * @param career
+     */
+    public void indexElasticSearch(Career career) {
+        try {
+<span class="nc" id="L176">            this.searchMsClient.indexCareer(career);</span>
+<span class="nc" id="L177">        } catch (Exception e) {</span>
+<span class="nc" id="L178">            e.printStackTrace();</span>
+<span class="nc" id="L179">        }</span>
+<span class="nc" id="L180">    }</span>
+
+
+    /**
+     * =======================================================
+     * Count the number of BiannualAssessments associated
+     * with the cmId and check if they are done for the current campaign
+     * =======================================================
+     *
+     * @param cmId
+     * @return
+     */
+    public BiannualAssessmentsCountDto countBiannualAssessments(Long cmId) {
+<span class="fc" id="L193">        List&lt;Career&gt; careers = careerRepository.findByCm(cmId);</span>
+<span class="fc" id="L194">        int baTodo = 0;</span>
+<span class="fc" id="L195">        int baReleased = 0;</span>
+
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">        if (careers != null) {</span>
+<span class="fc" id="L198">            AssessmentCampaign assessmentCampaign = assessmentCampaignRepository.findFirstByOrderByEndDateDesc();</span>
+
+<span class="pc bpc" id="L200" title="1 of 2 branches missed.">            if (assessmentCampaign != null) {</span>
+<span class="fc" id="L201">                int baTotal = careers.size();</span>
+<span class="pc" id="L202">                careers = careers.stream().filter(a -&gt; isBiannualAssessmentDoneForCampaign(a.getBiannualAssessments(), assessmentCampaign)).collect(Collectors.toList());</span>
+<span class="fc" id="L203">                baReleased = careers.size();</span>
+<span class="fc" id="L204">                baTodo = baTotal - baReleased;</span>
+            }
+        }
+
+
+<span class="fc" id="L209">        return BiannualAssessmentsCountDto.builder().todo(baTodo).released(baReleased).build();</span>
+    }
+
+    public Map&lt;String, Long&gt; statsBiannualAssessments(Long hrId) {
+
+<span class="nc" id="L214">        long baFinished = 0;</span>
+<span class="nc" id="L215">        long baInprogress = 0;</span>
+<span class="nc" id="L216">        long baNotStarted = 0;</span>
+
+<span class="nc" id="L218">        List&lt;BiAnnualAssessmentDto&gt; biannualAssessments = findHistoryBiannualAssessmentsByManagerId(hrId);</span>
+<span class="nc" id="L219">        baFinished = biannualAssessments.stream().filter(biannualAssessment -&gt; BiAnnualAssessmentStatus.Finished.equals(biannualAssessment.getStatus())).count();</span>
+<span class="nc" id="L220">        baInprogress = biannualAssessments.stream().filter(biannualAssessment -&gt; BiAnnualAssessmentStatus.InProgress.equals(biannualAssessment.getStatus())).count();</span>
+<span class="nc" id="L221">        baNotStarted = biannualAssessments.stream().filter(biannualAssessment -&gt; BiAnnualAssessmentStatus.NotStarted.equals(biannualAssessment.getStatus())).count();</span>
+
+
+<span class="nc" id="L224">        Map&lt;String, Long&gt; stats = new HashMap&lt;String, Long&gt;();</span>
+<span class="nc" id="L225">        stats.put(&quot;FinishedAssessements&quot;, baFinished);</span>
+<span class="nc" id="L226">        stats.put(&quot;InProgressAssessements&quot;, baInprogress);</span>
+<span class="nc" id="L227">        stats.put(&quot;NotStartedAssessements&quot;, baNotStarted);</span>
+
+<span class="nc" id="L229">        return stats;</span>
+    }
+
+    public List&lt;AssessmentCampaignDto&gt; getAllByCompanyId(Long companyId) {
+<span class="nc" id="L233">        List&lt;AssessmentCampaign&gt; assessmentCampaigns = assessmentCampaignRepository.findByIdCompanyId(companyId);</span>
+<span class="nc" id="L234">        return assessmentCampaigns.stream().map(AssessmentCampaign -&gt; AssessmentCampaignDtoConverter.newInstance().convert(AssessmentCampaign)).collect(Collectors.toList());</span>
+    }
+
+    /**
+     * =======================================================
+     * Check if one of the biannualAssessments
+     * correspond to the current campaign.
+     * =======================================================
+     *
+     * @param biannualAssessments
+     * @param lastAssessmentCampaign
+     * @return true if one of the assessments belongs to the input campaign, false otherwise
+     */
+    private boolean isBiannualAssessmentDoneForCampaign(List&lt;BiannualAssessment&gt; biannualAssessments, AssessmentCampaign lastAssessmentCampaign) {
+
+<span class="nc" id="L249">        return biannualAssessments.stream().anyMatch(ba -&gt; lastAssessmentCampaign.getId().equals(ba.getId().getAssessmentCampaign().getId()));</span>
+    }
+
+    /**
+     * =======================================================
+     * find careers by manager ID
+     * =======================================================
+     *
+     * @param managerId
+     * @return
+     */
+    public List&lt;CareerDto&gt; findCareersByManagerId(Long managerId) {
+
+<span class="nc" id="L262">        return careerRepository.findByCm(managerId).stream().map(career -&gt; CareerConverter.newInstance().convert(career)).collect(Collectors.toList());</span>
+    }
+
+
+    public BiAnnualAssessmentDto updateBiannualAssessment(Integer semester, Integer year, Long careerId, BiannualAssessmentRequestDto assessmentRequestDto) {
+<span class="nc" id="L267">        BiannualAssessment biannualAssessment = biannualAssessmentRepository.findByAssessmentCampaignAndCareer(semester, year, careerId).orElse(null);</span>
+<span class="nc" id="L268">        biannualAssessment.setTechnicalSkill(assessmentRequestDto.getTechnicalSkill());</span>
+<span class="nc" id="L269">        biannualAssessment.setTechnicalSkillComment(assessmentRequestDto.getTechnicalSkillComment());</span>
+<span class="nc" id="L270">        biannualAssessment.setOrganisationalSkill(assessmentRequestDto.getOrganisationalSkill());</span>
+<span class="nc" id="L271">        biannualAssessment.setOrganisationalSkillComment(assessmentRequestDto.getOrganisationalSkillComment());</span>
+<span class="nc" id="L272">        biannualAssessment.setFunctionalIndustryCompetency(assessmentRequestDto.getFunctionalIndustryCompetency());</span>
+<span class="nc" id="L273">        biannualAssessment.setFunctionalIndustryCompetencyComment(assessmentRequestDto.getFunctionalIndustryCompetencyComment());</span>
+<span class="nc" id="L274">        biannualAssessment.setGlobalPerformanceRating(assessmentRequestDto.getGlobalPerformanceRating());</span>
+<span class="nc" id="L275">        biannualAssessment.setComment(assessmentRequestDto.getComment());</span>
+<span class="nc" id="L276">        biannualAssessment.setScore(assessmentRequestDto.getScore());</span>
+<span class="nc" id="L277">        biannualAssessment.setStatus(assessmentRequestDto.getStatus().name());</span>
+<span class="nc" id="L278">        biannualAssessment.setManagementAbility(assessmentRequestDto.getManagementAbility());</span>
+<span class="nc" id="L279">        biannualAssessment.setManagementAbilityComment(assessmentRequestDto.getManagementAbilityComment());</span>
+<span class="nc" id="L280">        biannualAssessment.setCustomerRelationship(assessmentRequestDto.getCustomerRelationship());</span>
+<span class="nc" id="L281">        biannualAssessment.setCustomerRelationshipComment(assessmentRequestDto.getCustomerRelationshipComment());</span>
+<span class="nc" id="L282">        biannualAssessment.setCorporate(assessmentRequestDto.getCorporate());</span>
+<span class="nc" id="L283">        biannualAssessment.setCorporateComment(assessmentRequestDto.getCorporateComment());</span>
+<span class="nc" id="L284">        biannualAssessment.setAttendance(assessmentRequestDto.getAttendance());</span>
+<span class="nc" id="L285">        biannualAssessment.setAttendanceComment(assessmentRequestDto.getAttendanceComment());</span>
+<span class="nc" id="L286">        biannualAssessment.setDeliverableQuality(assessmentRequestDto.getDeliverableQuality());</span>
+<span class="nc" id="L287">        biannualAssessment.setDeliverableQualityComment(assessmentRequestDto.getDeliverableQualityComment());</span>
+<span class="nc" id="L288">        biannualAssessment.setTeamSpirit(assessmentRequestDto.getTeamSpirit());</span>
+<span class="nc" id="L289">        biannualAssessment.setTeamSpiritComment(assessmentRequestDto.getTeamSpiritComment());</span>
+<span class="nc" id="L290">        biannualAssessment.setLastUpdate(assessmentRequestDto.getLastUpdate());</span>
+<span class="nc" id="L291">        BiannualAssessment assessment = biannualAssessmentRepository.save(biannualAssessment);</span>
+<span class="nc" id="L292">        return BiAnnualAssessmentDtoConverter.newInstance().convert(assessment);</span>
+    }
+
+    /**
+     * =======================================================
+     * delete career by id
+     * =======================================================
+     * @param careerId
+     */
+    public void deleteCareerById(Long careerId){
+<span class="fc" id="L302">        Optional&lt;Career&gt; careerToBeDeleted = careerRepository.findById(careerId);</span>
+<span class="fc" id="L303">        careerRepository.delete(careerToBeDeleted.get());</span>
+
+<span class="fc" id="L305">    }</span>
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

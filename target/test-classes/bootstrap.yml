@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: test
+  liquibase:
+    contexts: testData
+  cloud:
+    config:
+      enabled: false

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BiannualAssessmentConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">career-ms</a> &gt; <a href="index.source.html" class="el_package">com.talenteo.career.converter</a> &gt; <span class="el_source">BiannualAssessmentConverter.java</span></div><h1>BiannualAssessmentConverter.java</h1><pre class="source lang-java linenums">package com.talenteo.career.converter;
+
+
+import com.talenteo.career.dto.BiannualAssessmentRequestDto;
+import com.talenteo.career.model.entity.AssessmentCampaign;
+import com.talenteo.career.model.entity.BiannualAssessment;
+import com.talenteo.career.model.entity.Career;
+import com.talenteo.career.model.entity.embedded.AssessmentCampaignId;
+import com.talenteo.career.model.entity.embedded.BiannualAssessmentId;
+import lombok.Data;
+import org.springframework.core.convert.converter.Converter;
+
+import java.util.Objects;
+
+<span class="pc bnc" id="L15" title="All 6 branches missed.">@Data(staticConstructor = &quot;newInstance&quot;)</span>
+public class BiannualAssessmentConverter implements Converter&lt;BiannualAssessmentRequestDto, BiannualAssessment&gt; {
+
+
+    @Override
+    public BiannualAssessment convert(BiannualAssessmentRequestDto biannualAssessmentRequestDto) {
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        if (Objects.isNull(biannualAssessmentRequestDto)) {</span>
+<span class="nc" id="L22">            return null;</span>
+        }
+<span class="fc" id="L24">        Career c = Career.builder().id(biannualAssessmentRequestDto.getCareer()).build();</span>
+
+<span class="fc" id="L26">        AssessmentCampaign ac = AssessmentCampaign.builder()</span>
+<span class="fc" id="L27">                .id(AssessmentCampaignId.builder().semester(biannualAssessmentRequestDto.getSemester()).year(biannualAssessmentRequestDto.getYear()).companyId(biannualAssessmentRequestDto.getCompanyId()).build())</span>
+<span class="fc" id="L28">                .build();</span>
+
+<span class="fc" id="L30">        return BiannualAssessment.builder()</span>
+<span class="fc" id="L31">                .id(BiannualAssessmentId.builder()</span>
+<span class="fc" id="L32">                        .assessmentCampaign(ac)</span>
+<span class="fc" id="L33">                        .career(c)</span>
+<span class="fc" id="L34">                        .build())</span>
+<span class="fc" id="L35">                .comment(biannualAssessmentRequestDto.getComment())</span>
+<span class="fc" id="L36">                .corporate(biannualAssessmentRequestDto.getCorporate())</span>
+<span class="fc" id="L37">                .creationDate(biannualAssessmentRequestDto.getCreationDate())</span>
+<span class="fc" id="L38">                .customerRelationship(biannualAssessmentRequestDto.getCustomerRelationship())</span>
+<span class="fc" id="L39">                .functionalIndustryCompetency(biannualAssessmentRequestDto.getFunctionalIndustryCompetency())</span>
+<span class="fc" id="L40">                .internalTrainerPotential(biannualAssessmentRequestDto.getInternalTrainerPotential())</span>
+<span class="fc" id="L41">                .lastUpdate(biannualAssessmentRequestDto.getLastUpdate())</span>
+<span class="fc" id="L42">                .organisationalSkill(biannualAssessmentRequestDto.getOrganisationalSkill())</span>
+<span class="fc" id="L43">                .sfEvolutivity(biannualAssessmentRequestDto.getSfEvolutivity())</span>
+<span class="fc" id="L44">                .bmEvolutivity(biannualAssessmentRequestDto.getBmEvolutivity())</span>
+<span class="fc" id="L45">                .score(biannualAssessmentRequestDto.getScore())</span>
+<span class="fc" id="L46">                .status(biannualAssessmentRequestDto.getStatus().name())</span>
+<span class="fc" id="L47">                .globalPerformanceRating(biannualAssessmentRequestDto.getGlobalPerformanceRating())</span>
+<span class="fc" id="L48">                .teamSpirit(biannualAssessmentRequestDto.getTeamSpirit())</span>
+<span class="fc" id="L49">                .userUpdate(biannualAssessmentRequestDto.getUserUpdate())</span>
+<span class="fc" id="L50">                .version(biannualAssessmentRequestDto.getVersion())</span>
+<span class="fc" id="L51">                .technicalSkill(biannualAssessmentRequestDto.getTechnicalSkill())</span>
+<span class="fc" id="L52">                .customerRelationshipComment(biannualAssessmentRequestDto.getCustomerRelationshipComment())</span>
+<span class="fc" id="L53">                .functionalIndustryCompetencyComment(biannualAssessmentRequestDto.getFunctionalIndustryCompetencyComment())</span>
+<span class="fc" id="L54">                .managementAbilityComment(biannualAssessmentRequestDto.getManagementAbilityComment())</span>
+<span class="fc" id="L55">                .organisationalSkillComment(biannualAssessmentRequestDto.getOrganisationalSkillComment())</span>
+<span class="fc" id="L56">                .corporateComment(biannualAssessmentRequestDto.getCorporateComment())</span>
+<span class="fc" id="L57">                .technicalSkillComment(biannualAssessmentRequestDto.getTechnicalSkillComment())</span>
+<span class="fc" id="L58">                .teamSpiritComment(biannualAssessmentRequestDto.getTeamSpiritComment())</span>
+<span class="fc" id="L59">                .managementAbility(biannualAssessmentRequestDto.getManagementAbility())</span>
+<span class="fc" id="L60">                .attendance(biannualAssessmentRequestDto.getAttendance())</span>
+<span class="fc" id="L61">                .attendanceComment(biannualAssessmentRequestDto.getAttendanceComment())</span>
+<span class="fc" id="L62">                .deliverableQuality(biannualAssessmentRequestDto.getDeliverableQuality())</span>
+<span class="fc" id="L63">                .deliverableQualityComment(biannualAssessmentRequestDto.getDeliverableQualityComment())</span>
+<span class="fc" id="L64">                .build();</span>
+
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
