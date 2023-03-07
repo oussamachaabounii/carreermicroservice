@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+    <changeSet id="002-insert-data-career-01" author="iheb" context="postgres">
+        <sql>
+            <!-- CAREER -->
+            INSERT INTO career.career (id, hr, last_ba, last_bm_followup, monthly_salary, daily_fee, devise, availability_date, comment, mobility_comment, cm, cma, creation_date, last_update, user_update, executive_status, version, entry_date) VALUES (1, 1, '2018-01-01', '2018-01-01', 3000, 100, 'EUR','2018-01-01', 'comment', 'mobility_comment', 1, 10, '2020-02-25 02:17:44.519526', '2020-02-15 02:17:44.519526', 1, 'executive_status', 1, '2020-03-02');
+        </sql>
+
+        <rollback>
+            <sql>
+
+            </sql>
+
+        </rollback>
+    </changeSet>
+    <changeSet id="002-insert-data-career-02" author="iheb" context="testData">
+        <sql>
+            <!-- CAREER -->
+            INSERT INTO career.career (id, hr, last_ba, last_bm_followup, monthly_salary, daily_fee, devise, availability_date, comment, mobility_comment, cm, cma, creation_date, last_update, user_update, executive_status, version, entry_date) VALUES (2, 2, '1978-02-02', '1978-02-02', 2000, 100, 'EUR', '1978-02-02', 'comment', 'mobility_comment', 2, 10, '2020-02-25 02:17:44.519526', '2020-02-15 02:17:44.519526', 1, 'executive_status', 1, '2020-03-17');
+            INSERT INTO career.career (id, hr, last_ba, last_bm_followup, monthly_salary, daily_fee, devise, availability_date, comment, mobility_comment, cm, cma, creation_date, last_update, user_update, executive_status, version, entry_date) VALUES (3, 3, '1978-02-02', '1978-02-02', 2000, 100, 'EUR', '1978-02-02', 'comment', 'mobility_comment', 2, 10, '2020-02-25 02:17:44.519526', '2020-02-15 02:17:44.519526', 1, 'executive_status', 1, '2020-03-17');
+
+        </sql>
+
+        <rollback>
+            <sql>
+
+            </sql>
+
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

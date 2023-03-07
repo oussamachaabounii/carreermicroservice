@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="007-insert-data-biannual_assessment_mobility-01" author="walid" context="testData">
+        <sql>
+
+            <!-- BIANNUAL_ASSESSMENT_MOBILITY -->
+            INSERT INTO career.biannual_assessment_mobility (semester, year, career_id, company_id, mobility_code) VALUES (1, 2020,2, 1L, 'mobility.fr.west');
+            INSERT INTO career.biannual_assessment_mobility (semester, year, career_id, company_id, mobility_code) VALUES (1, 2020,2, 1L, 'mobility.fr.east');
+
+        </sql>
+        <rollback>
+            <sql>
+
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
